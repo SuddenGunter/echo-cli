@@ -18,11 +18,12 @@ package cmd
 import (
 	"errors"
 	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
-var token string
+var (
+	token string
+)
 
 var ErrEmptyAuthToken = errors.New("Auth token must be not empty")
 
@@ -31,9 +32,16 @@ var authCmd = &cobra.Command{
 	Use:   "auth",
 	Short: "Authorize local user to echo-server",
 	RunE: func(cmd *cobra.Command, args []string) error {
+
 		if len(token)<= 0{
 			return ErrEmptyAuthToken
 		}
+
+		/*err := tokenStore.Save(token)
+		if err != nil {
+			return err
+		}*/
+
 		fmt.Println("auth called with token " + token)
 		return nil
 	},

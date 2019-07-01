@@ -17,14 +17,20 @@ package cmd
 
 import (
   "fmt"
+  "github.com/SuddenGunter/echo-cli/pkg/tokenstore"
   "github.com/spf13/cobra"
   "os"
+)
+
+var (
+  tokenStore tokenstore.TokenStore
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
   Use:   "echo-cli",
   Short: "Echo-CLI app created as one-evening experiment where main goal was get some skills with Cobra",
+  PreRunE: configureDependencies,
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -36,13 +42,11 @@ func Execute() {
   }
 }
 
-func init() {
-  cobra.OnInitialize(checkAuthFile)
+// configureDependencies configures all required dependencies
+func configureDependencies(cmd *cobra.Command, args []string) error {
+  tokenStore = tokenstore.NewTempFileTokenStore(tokenstore.DefaultTempFileTokenStoreConfig)
+  //todo check if file exists
+  return nil
 }
 
-
-// initConfig reads in config file and ENV variables if set.
-func checkAuthFile() {
-  //todo: check if auth file exists
-}
 
