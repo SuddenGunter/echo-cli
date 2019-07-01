@@ -25,6 +25,7 @@ import (
 var userCmd = &cobra.Command{
 	Use:   "user",
 	Short: "Manage users",
+	PreRunE: checkToken,
 	RunE: func(cmd *cobra.Command, args []string)  error {
 		cmd.SetOut(os.Stderr)
 		cmd.HelpFunc()(cmd, args)
@@ -32,6 +33,8 @@ var userCmd = &cobra.Command{
 	},
 }
 
-func init() {
-	rootCmd.AddCommand(userCmd)
+func checkToken(cmd *cobra.Command, args []string) error {
+	if len(token) <= 0{
+		return ErrEmptyAuthToken
+	}
 }

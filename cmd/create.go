@@ -30,7 +30,3 @@ var createCmd = &cobra.Command{
 		fmt.Println("Creating user: " + strings.Join(args, ""))
 	},
 }
-
-func init() {
-	userCmd.AddCommand(createCmd)
-}
