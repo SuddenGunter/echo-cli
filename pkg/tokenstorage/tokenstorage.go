@@ -10,6 +10,7 @@ type TokenStorage interface {
 	// Read and return token from storage
 	// Returns ErrTokenNotFound if token not found
 	Read() (string, error)
+	//todo Clear clears store
 }
 
 var ErrTokenNotFound = errors.New("Auth token not found")

@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"regexp"
 )
 
 type TempFileTokenStorageConfig struct {
@@ -40,6 +41,7 @@ func NewTempFileTokenStorage(config *TempFileTokenStorageConfig) *TempFileTokenS
 }
 
 func (storage *TempFileTokenStorage) Save(token string) error {
+	//todo delete all existing auth
 	tmpFile, err := ioutil.TempFile(os.TempDir(), storage.generateFileName()+"*.auth")
 	if err != nil {
 		log.Fatal("Cannot create temporary file", err)
@@ -52,4 +54,26 @@ func (storage *TempFileTokenStorage) Save(token string) error {
 	}
 
 	return nil
+}
+
+func (storage *TempFileTokenStorage) Read() (string, error) {
+	result, err := ioutil.ReadDir(os.TempDir())
+	if err != nil {
+		return "", err
+	}
+
+	for _, v := range result {
+		if !v.IsDir() && searchTempFileRegexp.MatchString(v.Name()) {
+			return v.Name(), nil
+		}
+	}
+
+	return "", ErrTokenNotFound
+}
+
+var searchTempFileRegexp *regexp.Regexp
+
+func init() {
+	searchTempFileRegexp = regexp.MustCompile(`\..+auth`)
+
 }
