@@ -42,7 +42,9 @@ func NewTempFileTokenStorage(config *TempFileTokenStorageConfig) *TempFileTokenS
 
 func (storage *TempFileTokenStorage) Save(token string) error {
 	//todo delete all existing auth
+	//todo replace with custom dir inside temp
 	tmpFile, err := ioutil.TempFile(os.TempDir(), storage.generateFileName()+"*.auth")
+
 	if err != nil {
 		log.Fatal("Cannot create temporary file", err)
 	}
