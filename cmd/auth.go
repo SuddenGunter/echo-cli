@@ -21,6 +21,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	token string
+)
+
 var ErrEmptyAuthToken = errors.New("Auth token must be not empty")
 
 // authCmd represents the auth command
@@ -41,4 +45,9 @@ var authCmd = &cobra.Command{
 		fmt.Println("auth called with token " + token)
 		return nil
 	},
+}
+
+func init() {
+	rootCmd.AddCommand(authCmd)
+	authCmd.Flags().StringVarP(&token, "token", "t", "", "Base64 encoded auth token value")
 }

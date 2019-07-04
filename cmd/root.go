@@ -19,13 +19,11 @@ import (
   "fmt"
   "github.com/SuddenGunter/echo-cli/pkg/tokenstore"
   "github.com/spf13/cobra"
-  "log"
   "os"
 )
 
 var (
   tokenStore tokenstore.TokenStore
-  token string
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -44,30 +42,11 @@ func Execute() {
   }
 }
 
-
 // configureDependencies configures all required dependencies
 func configureDependencies(cmd *cobra.Command, args []string) error {
-  rootCmd.AddCommand(userCmd)
-  userCmd.AddCommand(createCmd)
-
-  rootCmd.AddCommand(authCmd)
-  authCmd.Flags().StringVarP(&token, "token", "t", "", "Base64 encoded auth token value")
-
-  //todo don't run if command is auth!
   tokenStore = tokenstore.NewTempFileTokenStore(tokenstore.DefaultTempFileTokenStoreConfig)
-  token, err := tokenStore.Read()
-
-  if err != nil {
-    cmd.SetOut(os.Stderr)
-    if err == tokenstore.ErrTokenNotFound{
-      cmd.Println("Please authorize before using Echo-CLI")
-      cmd.HelpFunc()(authCmd, args)
-    }
-    return err
-  }
-
-  //todo save to "state"
-  log.Printf("Token: %v\n", token)
-
+  //todo check if file exists
   return nil
 }
+
+

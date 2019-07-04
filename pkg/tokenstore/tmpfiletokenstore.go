@@ -51,8 +51,3 @@ func (store *TempFileTokenStore) Save(token string) error {
 
 	return nil
 }
-
-//todo implement
-func (store *TempFileTokenStore) Read() (string, error) {
-	return "", ErrTokenNotFound
-}
