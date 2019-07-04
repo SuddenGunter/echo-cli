@@ -1,6 +1,7 @@
 package tokenstore
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -39,10 +40,11 @@ func NewTempFileTokenStore(config *TempFileTokenStoreConfig) *TempFileTokenStore
 }
 
 func (store *TempFileTokenStore) Save(token string) error {
-	tmpFile, err := ioutil.TempFile(os.TempDir(), store.generateFileName()+".auth")
+	tmpFile, err := ioutil.TempFile(os.TempDir(), store.generateFileName()+"*.auth")
 	if err != nil {
 		log.Fatal("Cannot create temporary file", err)
 	}
+	fmt.Printf("Log saved to %v%v", os.TempDir(), tmpFile.Name())
 
 	_, err = tmpFile.WriteString(token)
 	if err != nil {

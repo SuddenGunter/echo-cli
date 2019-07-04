@@ -17,11 +17,8 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"github.com/spf13/cobra"
 )
-
-var token string
 
 var ErrEmptyAuthToken = errors.New("Auth token must be not empty")
 
@@ -34,7 +31,10 @@ var authCmd = &cobra.Command{
 		if len(token) <= 0 {
 			return ErrEmptyAuthToken
 		}
-		fmt.Println("auth called with token " + token)
+		err := tokenStore.Save(token)
+		if err != nil {
+			return err
+		}
 		return nil
 	},
 }

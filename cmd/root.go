@@ -16,22 +16,21 @@ limitations under the License.
 package cmd
 
 import (
-	"fmt"
 	"github.com/SuddenGunter/echo-cli/pkg/tokenstore"
 	"github.com/spf13/cobra"
-	"os"
+	"log"
 )
 
-var tokenStore tokenstore.TokenStore
+var (
+	tokenStore tokenstore.TokenStore
+	token      string
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use: "echo-cli",
-	PreRun: func(cmd *cobra.Command, args []string) {
-		fmt.Println("haha")
-	},
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		fmt.Println("haha2")
+		//TODO read token from token store
 	},
 	Short: "Echo-CLI app created as one-evening experiment where main goal was get some skills with Cobra",
 }
@@ -47,7 +46,6 @@ func Execute(store tokenstore.TokenStore) {
 	authCmd.Flags().StringVarP(&token, "token", "t", "", "Base64 encoded auth token value")
 
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 }

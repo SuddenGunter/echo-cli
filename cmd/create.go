@@ -27,6 +27,6 @@ var createCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Create user in system",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Creating user: " + strings.Join(args, ""))
+		fmt.Print("Creating user: " + strings.Join(args, ""))
 	},
 }
