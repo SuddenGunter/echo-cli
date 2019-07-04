@@ -15,8 +15,13 @@ limitations under the License.
 */
 package main
 
-import "github.com/SuddenGunter/echo-cli/cmd"
+import (
+	"github.com/SuddenGunter/echo-cli/cmd"
+	"github.com/SuddenGunter/echo-cli/pkg/tokenstore"
+)
 
 func main() {
-  cmd.Execute()
+	config := tokenstore.DefaultTempFileTokenStoreConfig
+	store := tokenstore.NewTempFileTokenStore(config)
+	cmd.Execute(store)
 }

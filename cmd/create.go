@@ -24,13 +24,9 @@ import (
 // createCmd represents the command for creating user in system process
 var createCmd = &cobra.Command{
 	Use:   "create",
-	Args: cobra.MinimumNArgs(1),
+	Args:  cobra.MinimumNArgs(1),
 	Short: "Create user in system",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Creating user: " + strings.Join(args, ""))
 	},
-}
-
-func init() {
-	userCmd.AddCommand(createCmd)
 }

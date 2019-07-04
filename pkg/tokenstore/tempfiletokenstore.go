@@ -20,7 +20,7 @@ var DefaultTempFileTokenStoreConfig = &TempFileTokenStoreConfig{
 // calls os.Exit(1) in case of any errors
 func generateFileNameByHost() string {
 	name, err := os.Hostname()
-	if err != nil{
+	if err != nil {
 		log.Fatal(err)
 	}
 
@@ -32,7 +32,7 @@ type TempFileTokenStore struct {
 }
 
 // NewTempFileTokenStore creates new instance of TempFileTokenStore
-func NewTempFileTokenStore(config *TempFileTokenStoreConfig) *TempFileTokenStore{
+func NewTempFileTokenStore(config *TempFileTokenStoreConfig) *TempFileTokenStore {
 	return &TempFileTokenStore{
 		generateFileName: config.GenerateFileName,
 	}
@@ -45,7 +45,7 @@ func (store *TempFileTokenStore) Save(token string) error {
 	}
 
 	_, err = tmpFile.WriteString(token)
-	if err != nil{
+	if err != nil {
 		return err
 	}
 

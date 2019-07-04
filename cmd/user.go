@@ -25,13 +25,9 @@ import (
 var userCmd = &cobra.Command{
 	Use:   "user",
 	Short: "Manage users",
-	RunE: func(cmd *cobra.Command, args []string)  error {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		cmd.SetOut(os.Stderr)
 		cmd.HelpFunc()(cmd, args)
 		return nil
 	},
-}
-
-func init() {
-	rootCmd.AddCommand(userCmd)
 }
