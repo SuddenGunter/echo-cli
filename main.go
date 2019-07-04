@@ -17,11 +17,11 @@ package main
 
 import (
 	"github.com/SuddenGunter/echo-cli/cmd"
-	"github.com/SuddenGunter/echo-cli/pkg/tokenstore"
+	"github.com/SuddenGunter/echo-cli/pkg/tokenstorage"
 )
 
 func main() {
-	config := tokenstore.DefaultTempFileTokenStoreConfig
-	store := tokenstore.NewTempFileTokenStore(config)
-	cmd.Execute(store)
+	config := tokenstorage.DefaultTempFileTokenStorageConfig
+	storage := tokenstorage.NewTempFileTokenStorage(config)
+	cmd.Execute(storage)
 }

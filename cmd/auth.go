@@ -31,7 +31,7 @@ var authCmd = &cobra.Command{
 		if len(token) <= 0 {
 			return ErrEmptyAuthToken
 		}
-		err := tokenStore.Save(token)
+		err := tokenStorage.Save(token)
 		if err != nil {
 			return err
 		}

@@ -16,29 +16,29 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/SuddenGunter/echo-cli/pkg/tokenstore"
+	"github.com/SuddenGunter/echo-cli/pkg/tokenstorage"
 	"github.com/spf13/cobra"
 	"log"
 )
 
 var (
-	tokenStore tokenstore.TokenStore
-	token      string
+	tokenStorage tokenstorage.TokenStorage
+	token        string
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use: "echo-cli",
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		//TODO read token from token store
+		//TODO read token from token storage
 	},
 	Short: "Echo-CLI app created as one-evening experiment where main goal was get some skills with Cobra",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute(store tokenstore.TokenStore) {
-	tokenStore = store
+func Execute(storage tokenstorage.TokenStorage) {
+	tokenStorage = storage
 
 	rootCmd.AddCommand(userCmd)
 	userCmd.AddCommand(createCmd)

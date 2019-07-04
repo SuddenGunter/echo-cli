@@ -1,4 +1,4 @@
-package tokenstore
+package tokenstorage
 
 import (
 	"fmt"
@@ -7,13 +7,13 @@ import (
 	"os"
 )
 
-type TempFileTokenStoreConfig struct {
+type TempFileTokenStorageConfig struct {
 	GenerateFileName func() string
 }
 
 // Config with filename generator based on host name.
 // Generator calls os.Exit(1) in case of any errors
-var DefaultTempFileTokenStoreConfig = &TempFileTokenStoreConfig{
+var DefaultTempFileTokenStorageConfig = &TempFileTokenStorageConfig{
 	GenerateFileName: generateFileNameByHost,
 }
 
@@ -28,19 +28,19 @@ func generateFileNameByHost() string {
 	return name
 }
 
-type TempFileTokenStore struct {
+type TempFileTokenStorage struct {
 	generateFileName func() string
 }
 
-// NewTempFileTokenStore creates new instance of TempFileTokenStore
-func NewTempFileTokenStore(config *TempFileTokenStoreConfig) *TempFileTokenStore {
-	return &TempFileTokenStore{
+// NewTempFileTokenStorage creates new instance of TempFileTokenStorage
+func NewTempFileTokenStorage(config *TempFileTokenStorageConfig) *TempFileTokenStorage {
+	return &TempFileTokenStorage{
 		generateFileName: config.GenerateFileName,
 	}
 }
 
-func (store *TempFileTokenStore) Save(token string) error {
-	tmpFile, err := ioutil.TempFile(os.TempDir(), store.generateFileName()+"*.auth")
+func (storage *TempFileTokenStorage) Save(token string) error {
+	tmpFile, err := ioutil.TempFile(os.TempDir(), storage.generateFileName()+"*.auth")
 	if err != nil {
 		log.Fatal("Cannot create temporary file", err)
 	}
