@@ -16,9 +16,10 @@ limitations under the License.
 package cmd
 
 import (
+	"log"
+
 	"github.com/SuddenGunter/echo-cli/pkg/tokenstorage"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 var (

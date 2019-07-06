@@ -17,9 +17,10 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
 // createCmd represents the command for creating user in system process

@@ -2,11 +2,12 @@ package tokenstorage
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 const fileNamePrefix = "echo-cli.auth."
