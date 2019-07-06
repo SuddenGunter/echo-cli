@@ -16,6 +16,9 @@ limitations under the License.
 package cmd
 
 import (
+	"fmt"
+
+	"github.com/SuddenGunter/echo-cli/pkg/tokenstorage"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
@@ -31,10 +34,19 @@ var authCmd = &cobra.Command{
 		if len(tokenFlag) <= 0 {
 			return ErrEmptyAuthToken
 		}
-		err := tokenStorage.Save(tokenFlag)
+		err := state.TokenStorage.Save(tokenFlag)
 		if err != nil {
 			return errors.Wrap(err, "Failed save auth token on auth command")
 		}
 		return nil
 	},
+}
+
+func UnauthorizedErrorHandler(err error) error {
+	if err == tokenstorage.ErrTokenNotFound {
+		fmt.Println("User must be authorized before using this command")
+		_ = authCmd.Help()
+		return nil
+	}
+	return errors.Wrap(err, "Failed to read auth token on user creation")
 }
