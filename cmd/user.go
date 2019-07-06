@@ -16,8 +16,9 @@ limitations under the License.
 package cmd
 
 import (
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/spf13/cobra"
 )
 
 // userCmd represents the user command, which is only a glue
@@ -25,13 +26,9 @@ import (
 var userCmd = &cobra.Command{
 	Use:   "user",
 	Short: "Manage users",
-	RunE: func(cmd *cobra.Command, args []string)  error {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		cmd.SetOut(os.Stderr)
 		cmd.HelpFunc()(cmd, args)
 		return nil
 	},
-}
-
-func init() {
-	rootCmd.AddCommand(userCmd)
 }

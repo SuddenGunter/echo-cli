@@ -16,30 +16,25 @@ limitations under the License.
 package cmd
 
 import (
-	"errors"
-	"fmt"
-
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
-
-var token string
 
 var ErrEmptyAuthToken = errors.New("Auth token must be not empty")
 
 // authCmd represents the auth command
 var authCmd = &cobra.Command{
-	Use:   "auth",
-	Short: "Authorize local user to echo-server",
+	Use:     "auth",
+	Short:   "Authorize local user to echo-server",
+	Example: "echo-cli auth -t=SECURITY_TOKEN",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if len(token)<= 0{
+		if len(tokenFlag) <= 0 {
 			return ErrEmptyAuthToken
 		}
-		fmt.Println("auth called with token " + token)
+		err := tokenStorage.Save(tokenFlag)
+		if err != nil {
+			return errors.Wrap(err, "Failed save auth token on auth command")
+		}
 		return nil
 	},
-}
-
-func init() {
-	rootCmd.AddCommand(authCmd)
-	authCmd.Flags().StringVarP(&token, "token", "t", "", "Base64 encoded auth token value")
 }

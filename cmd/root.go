@@ -16,33 +16,35 @@ limitations under the License.
 package cmd
 
 import (
-  "fmt"
-  "github.com/spf13/cobra"
-  "os"
+	"log"
+
+	"github.com/SuddenGunter/echo-cli/pkg/tokenstorage"
+	"github.com/spf13/cobra"
+)
+
+var (
+	tokenStorage tokenstorage.TokenStorage
+	tokenFlag    string
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-  Use:   "echo-cli",
-  Short: "Echo-CLI app created as one-evening experiment where main goal was get some skills with Cobra",
+	Use:   "echo-cli",
+	Short: "Echo-CLI app created as one-evening experiment where main goal was get some skills with Cobra",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-  if err := rootCmd.Execute(); err != nil {
-    fmt.Println(err)
-    os.Exit(1)
-  }
+func Execute(storage tokenstorage.TokenStorage) {
+	tokenStorage = storage
+
+	rootCmd.AddCommand(userCmd)
+	userCmd.AddCommand(createCmd)
+
+	rootCmd.AddCommand(authCmd)
+	authCmd.Flags().StringVarP(&tokenFlag, "token", "t", "", "Base64 encoded auth token value")
+
+	if err := rootCmd.Execute(); err != nil {
+		log.Fatal(err)
+	}
 }
-
-func init() {
-  cobra.OnInitialize(checkAuthFile)
-}
-
-
-// initConfig reads in config file and ENV variables if set.
-func checkAuthFile() {
-  //todo: check if auth file exists
-}
-

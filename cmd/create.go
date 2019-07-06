@@ -17,20 +17,25 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"strings"
+
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
 )
 
 // createCmd represents the command for creating user in system process
 var createCmd = &cobra.Command{
 	Use:   "create",
-	Args: cobra.MinimumNArgs(1),
+	Args:  cobra.MinimumNArgs(1),
 	Short: "Create user in system",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("Creating user: " + strings.Join(args, ""))
-	},
-}
+	RunE: func(cmd *cobra.Command, args []string) error {
+		token, err := tokenStorage.Read()
+		if err != nil {
+			return errors.Wrap(err, "Failed to read auth token on user creation")
+		}
+		fmt.Printf("Token: %v\n", token)
+		fmt.Print("Creating user: " + strings.Join(args, ""))
 
-func init() {
-	userCmd.AddCommand(createCmd)
+		return nil
+	},
 }
