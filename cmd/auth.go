@@ -16,7 +16,7 @@ limitations under the License.
 package cmd
 
 import (
-	"errors"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +33,7 @@ var authCmd = &cobra.Command{
 		}
 		err := tokenStorage.Save(token)
 		if err != nil {
-			return err
+			return errors.Wrap(err, "Failed save auth token on auth command")
 		}
 		return nil
 	},
