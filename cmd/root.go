@@ -23,15 +23,12 @@ import (
 
 var (
 	tokenStorage tokenstorage.TokenStorage
-	token        string
+	tokenFlag    string
 )
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use: "echo-cli",
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		//TODO read token from token storage
-	},
+	Use:   "echo-cli",
 	Short: "Echo-CLI app created as one-evening experiment where main goal was get some skills with Cobra",
 }
 
@@ -42,8 +39,9 @@ func Execute(storage tokenstorage.TokenStorage) {
 
 	rootCmd.AddCommand(userCmd)
 	userCmd.AddCommand(createCmd)
+
 	rootCmd.AddCommand(authCmd)
-	authCmd.Flags().StringVarP(&token, "token", "t", "", "Base64 encoded auth token value")
+	authCmd.Flags().StringVarP(&tokenFlag, "token", "t", "", "Base64 encoded auth token value")
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err)

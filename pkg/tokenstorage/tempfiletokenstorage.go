@@ -89,7 +89,7 @@ func (storage *TempFileTokenStorage) deleteExistingTokens() error {
 }
 
 func (storage *TempFileTokenStorage) Read() (string, error) {
-	result, err := ioutil.ReadDir(os.TempDir())
+	result, err := ioutil.ReadDir(storage.tokenStorePath)
 	if err != nil {
 		return "", errors.Wrap(err, "Failed to read temp dir")
 	}
@@ -98,7 +98,7 @@ func (storage *TempFileTokenStorage) Read() (string, error) {
 		if file.IsDir() || !strings.HasPrefix(file.Name(), fileNamePrefix) {
 			continue
 		}
-		tokenAsBuffer, err := ioutil.ReadFile(file.Name())
+		tokenAsBuffer, err := ioutil.ReadFile(filepath.Join(storage.tokenStorePath, file.Name()))
 		if err != nil {
 			return "", errors.Wrap(err, "Failed to read token from file")
 		}

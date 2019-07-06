@@ -28,10 +28,10 @@ var authCmd = &cobra.Command{
 	Short:   "Authorize local user to echo-server",
 	Example: "echo-cli auth -t=SECURITY_TOKEN",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		if len(token) <= 0 {
+		if len(tokenFlag) <= 0 {
 			return ErrEmptyAuthToken
 		}
-		err := tokenStorage.Save(token)
+		err := tokenStorage.Save(tokenFlag)
 		if err != nil {
 			return errors.Wrap(err, "Failed save auth token on auth command")
 		}
