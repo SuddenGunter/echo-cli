@@ -2,57 +2,87 @@ package tokenstorage
 
 import (
 	"fmt"
+	"github.com/pkg/errors"
 	"io/ioutil"
-	"log"
 	"os"
-	"regexp"
+	"path/filepath"
+	"strings"
 )
 
+const fileNamePrefix = "echo-cli.auth."
+
 type TempFileTokenStorageConfig struct {
-	GenerateFileName func() string
+	GenerateFileName func() (string, error)
 }
 
 // Config with filename generator based on host name.
-// Generator calls os.Exit(1) in case of any errors
 var DefaultTempFileTokenStorageConfig = &TempFileTokenStorageConfig{
 	GenerateFileName: generateFileNameByHost,
 }
 
 // generateFileNameByHost creates filename based on host name
-// calls os.Exit(1) in case of any errors
-func generateFileNameByHost() string {
+func generateFileNameByHost() (string, error) {
 	name, err := os.Hostname()
 	if err != nil {
-		log.Fatal(err)
+		return "", errors.Wrap(err, "Failed to get hostname")
 	}
 
-	return name
+	return name, nil
 }
 
 type TempFileTokenStorage struct {
-	generateFileName func() string
+	generateFileName func() (string, error)
+	tokenStorePath   string
 }
 
 // NewTempFileTokenStorage creates new instance of TempFileTokenStorage
 func NewTempFileTokenStorage(config *TempFileTokenStorageConfig) *TempFileTokenStorage {
 	return &TempFileTokenStorage{
 		generateFileName: config.GenerateFileName,
+		tokenStorePath:   os.TempDir(),
 	}
 }
 
 func (storage *TempFileTokenStorage) Save(token string) error {
-	//todo delete all existing auth
-	//todo replace with custom dir inside temp
-	tmpFile, err := ioutil.TempFile(os.TempDir(), storage.generateFileName()+"*.auth")
-
+	err := storage.deleteExistingTokens()
 	if err != nil {
-		log.Fatal("Cannot create temporary file", err)
+		return errors.Wrap(err, "Failed to delete old token")
 	}
-	fmt.Printf("Log saved to %v%v", os.TempDir(), tmpFile.Name())
+
+	filename, err := storage.generateFileName()
+	if err != nil {
+		return errors.Wrap(err, "Failed generate filename")
+	}
+
+	tmpFile, err := ioutil.TempFile(storage.tokenStorePath, fileNamePrefix+filename+"*.auth")
+	if err != nil {
+		return errors.Wrap(err, "Failed to create temporary file with aut token")
+	}
+
+	fmt.Printf("Auth file saved to %v%v", storage.tokenStorePath, tmpFile.Name())
 
 	_, err = tmpFile.WriteString(token)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "Failed to save auth token")
+	}
+
+	return nil
+}
+
+func (storage *TempFileTokenStorage) deleteExistingTokens() error {
+	result, err := ioutil.ReadDir(os.TempDir())
+	if err != nil {
+		return errors.Wrap(err, "Failed to read temp dir")
+	}
+
+	for _, file := range result {
+		if file.IsDir() || !strings.HasPrefix(file.Name(), fileNamePrefix) {
+			continue
+		}
+		err := os.Remove(filepath.Join(storage.tokenStorePath, file.Name()))
+		if err != nil {
+			return errors.Wrap(err, "Failed to delete old auth token")
+		}
 	}
 
 	return nil
@@ -61,21 +91,20 @@ func (storage *TempFileTokenStorage) Save(token string) error {
 func (storage *TempFileTokenStorage) Read() (string, error) {
 	result, err := ioutil.ReadDir(os.TempDir())
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "Failed to read temp dir")
 	}
 
-	for _, v := range result {
-		if !v.IsDir() && searchTempFileRegexp.MatchString(v.Name()) {
-			return v.Name(), nil
+	for _, file := range result {
+		if file.IsDir() || !strings.HasPrefix(file.Name(), fileNamePrefix) {
+			continue
 		}
+		tokenAsBuffer, err := ioutil.ReadFile(file.Name())
+		if err != nil {
+			return "", errors.Wrap(err, "Failed to read token from file")
+		}
+
+		return string(tokenAsBuffer), nil
 	}
 
-	return "", ErrTokenNotFound
-}
-
-var searchTempFileRegexp *regexp.Regexp
-
-func init() {
-	searchTempFileRegexp = regexp.MustCompile(`\..+auth`)
-
+	return "", errors.WithStack(ErrTokenNotFound)
 }
