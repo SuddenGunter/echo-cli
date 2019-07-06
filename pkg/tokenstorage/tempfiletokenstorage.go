@@ -60,7 +60,7 @@ func (storage *TempFileTokenStorage) Save(token string) error {
 		return errors.Wrap(err, "Failed to create temporary file with aut token")
 	}
 
-	fmt.Printf("Auth file saved to %v%v", storage.tokenStorePath, tmpFile.Name())
+	fmt.Printf("Auth file saved to %v\n", tmpFile.Name())
 
 	_, err = tmpFile.WriteString(token)
 	if err != nil {

@@ -20,6 +20,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
+
 	"github.com/spf13/cobra"
 )
 
@@ -29,10 +30,11 @@ var createCmd = &cobra.Command{
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Create user in system",
 	RunE: func(cmd *cobra.Command, args []string) error {
-		token, err := tokenStorage.Read()
+		token, err := state.UserInfo.GetToken()
 		if err != nil {
-			return errors.Wrap(err, "Failed to read auth token on user creation")
+			return errors.Wrap(err, "Failed to get user token")
 		}
+
 		fmt.Printf("Token: %v\n", token)
 		fmt.Print("Creating user: " + strings.Join(args, ""))
 
