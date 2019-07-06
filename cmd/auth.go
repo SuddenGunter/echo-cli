@@ -43,7 +43,7 @@ var authCmd = &cobra.Command{
 }
 
 func UnauthorizedErrorHandler(err error) error {
-	if err == tokenstorage.ErrTokenNotFound {
+	if err.Error() == tokenstorage.ErrTokenNotFound.Error() {
 		fmt.Println("User must be authorized before using this command")
 		_ = authCmd.Help()
 		return nil
