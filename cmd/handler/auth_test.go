@@ -36,7 +36,6 @@ func mockErrorHandler(err error) error {
 }
 
 func Test_Handle_OnStorageWithToken_ReturnsToken(t *testing.T) {
-
 	storage := new(TokenStorageMock)
 	storage.On("Save", ConstToken).Return(nil)
 	storage.On("Read").Return(ConstToken, nil)
@@ -48,33 +47,28 @@ func Test_Handle_OnStorageWithToken_ReturnsToken(t *testing.T) {
 }
 
 func Test_GetToken_OnStorageWithoutToken_ErrorHandlerCalled(t *testing.T) {
-
 	storage := new(TokenStorageMock)
 	storage.On("Save", ConstToken).Return(nil)
 	storage.On("Read").Return("", tokenstorage.ErrTokenNotFound)
 	auth := NewAuthHandler(storage, mockErrorHandler)
 
 	err := auth.Handle(nil, nil)
-
-	require.NotNil(t, err)
-
 	startsWith := func() bool {
 		return strings.HasPrefix(err.Error(), MockErrorHandlerCalled)
 	}
 
+	require.NotNil(t, err)
 	require.Condition(t, startsWith)
 	require.Equal(t, tokenstorage.ErrTokenNotFound.Error(), errors.Cause(err).Error())
 }
 
 func Test_GetToken_WhenTokenExists_ReturnsToken(t *testing.T) {
-
 	storage := new(TokenStorageMock)
 	storage.On("Save", ConstToken).Return(nil)
 	storage.On("Read").Return(ConstToken, nil)
 	auth := NewAuthHandler(storage, mockErrorHandler)
 
 	auth.token = ConstToken
-
 	token, err := auth.GetToken()
 
 	require.Nil(t, err)
@@ -82,14 +76,12 @@ func Test_GetToken_WhenTokenExists_ReturnsToken(t *testing.T) {
 }
 
 func Test_GetToken_WhenTokenEmpty_ReturnsErr(t *testing.T) {
-
 	storage := new(TokenStorageMock)
 	storage.On("Save", ConstToken).Return(nil)
 	storage.On("Read").Return(ConstToken, nil)
 	auth := NewAuthHandler(storage, mockErrorHandler)
 
 	auth.token = ""
-
 	_, err := auth.GetToken()
 
 	require.NotNil(t, err)

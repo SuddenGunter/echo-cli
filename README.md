@@ -16,6 +16,11 @@ Available Commands:
 
 Use `make build` to build app
 
+# test
+
+Use `make test` to build app
+
 # demo
 
 Use `make demo` to run app in demo mode. You need working server to see demo. Server included as submodule in same repo
+
