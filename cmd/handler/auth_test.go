@@ -4,13 +4,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/pkg/errors"
-
-	"github.com/stretchr/testify/require"
-
 	"github.com/SuddenGunter/echo-cli/pkg/tokenstorage"
-
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/require"
 )
 
 const ConstToken string = "sec_token"
