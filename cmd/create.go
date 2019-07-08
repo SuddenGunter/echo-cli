@@ -19,6 +19,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/SuddenGunter/echo-cli/pkg/echo"
+
 	"github.com/pkg/errors"
 
 	"github.com/spf13/cobra"
@@ -34,7 +36,11 @@ var createCmd = &cobra.Command{
 		if err != nil {
 			return errors.Wrap(err, "Failed to get user token")
 		}
-
+		cl := &echo.Client{
+			ConnectionString: "localhost:8080",
+			Route:            "/ws",
+		}
+		_ = cl.Connect()
 		fmt.Printf("Token: %v\n", token)
 		fmt.Print("Creating user: " + strings.Join(args, ""))
 
