@@ -1,5 +1,5 @@
 /*
-Copyright © 2019 NAME HERE <EMAIL ADDRESS>
+Copyright © 2019 ARTEM KOLOMYTSEV kolomytsev1996@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,8 +17,10 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
+	"github.com/SuddenGunter/echo-cli/pkg/echo"
 	"github.com/pkg/errors"
 
 	"github.com/spf13/cobra"
@@ -34,10 +36,11 @@ var createCmd = &cobra.Command{
 		if err != nil {
 			return errors.Wrap(err, "Failed to get user token")
 		}
-
-		fmt.Printf("Token: %v\n", token)
-		fmt.Print("Creating user: " + strings.Join(args, ""))
-
+		response, err := echo.SendOnce(state.Client, token, "user create "+strings.Join(args, ""))
+		if err != nil {
+			log.Fatalf("Failed send message to server: %v", err)
+		}
+		fmt.Print(response)
 		return nil
 	},
 }

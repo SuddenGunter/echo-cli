@@ -1,5 +1,5 @@
 /*
-Copyright © 2019 NAME HERE <EMAIL ADDRESS>
+Copyright © 2019 ARTEM KOLOMYTSEV kolomytsev1996@gmail.com
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -18,13 +18,17 @@ package main
 import (
 	"github.com/SuddenGunter/echo-cli/cmd"
 	"github.com/SuddenGunter/echo-cli/cmd/config"
+	"github.com/SuddenGunter/echo-cli/pkg/echo"
 	"github.com/SuddenGunter/echo-cli/pkg/tokenstorage"
 )
 
 func main() {
 	tokenCfg := tokenstorage.DefaultTempFileTokenStorageConfig
 	storage := tokenstorage.NewTempFileTokenStorage(tokenCfg)
-	state := config.NewState(storage, cmd.UnauthorizedErrorHandler)
 
+	client := echo.NewClient("localhost:8080", "/ws")
+
+	state := config.NewState(storage, cmd.UnauthorizedErrorHandler, client)
 	cmd.Execute(state)
+
 }
