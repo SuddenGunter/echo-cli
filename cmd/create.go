@@ -17,6 +17,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/SuddenGunter/echo-cli/pkg/echo"
@@ -37,7 +38,7 @@ var createCmd = &cobra.Command{
 		}
 		response, err := echo.SendOnce(state.Client, token, "user create "+strings.Join(args, ""))
 		if err != nil {
-			return errors.Wrap(err, "Failed send message to server")
+			log.Fatalf("Failed send message to server: %v", err)
 		}
 		fmt.Print(response)
 		return nil
