@@ -1,6 +1,6 @@
 # echo-cli
 
-Echo-CLI app created as one-evening experiment where main goal was get some skills with Cobra
+Echo-CLI app created as an experiment where main goal was get some skills with Cobra. It allows to save auth token to temp dir, and it it's presented - connect and communicate with websocket server (see echo-server submodule).
 
 Usage:
   `echo-cli [command]`
