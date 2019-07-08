@@ -11,26 +11,36 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type Client struct {
+type Client interface {
+	// Connect allows to establish websocket connection to configured server using user's auth token
+	Connect(authToken string) error
+	// SendMessage sends plain-text message over websocket channel to server
+	SendMessage(message string) error
+	// Listen start sending all received messages to configured messageReceiver
+	Listen(chan string) error
+	// Close sends websocket.CloseMessage to server and disconnects
+	Close() error
+}
+
+type DefaultEchoServersClient struct {
 	connectionString string
 	route            string
 	connection       *websocket.Conn
 	closed           chan struct{}
-	messageReceiver  chan string
 }
 
 // NewClient creates new client for websocket connection
 // example config: connectionString: "localhost:8080", route: "/ws"
-func NewClient(connectionString string, route string, messageReceiver chan string) *Client {
-	return &Client{
+func NewClient(connectionString string, route string) *DefaultEchoServersClient {
+	return &DefaultEchoServersClient{
 		connectionString: connectionString,
 		route:            route,
-		messageReceiver:  messageReceiver,
+		closed:           make(chan struct{}),
 	}
 }
 
 // Connect allows to establish websocket connection to configured server using user's auth token
-func (client *Client) Connect(authToken string) error {
+func (client *DefaultEchoServersClient) Connect(authToken string) error {
 	if client.connection != nil {
 		return errors.WithStack(errors.New("Already connected"))
 	}
@@ -47,9 +57,9 @@ func (client *Client) Connect(authToken string) error {
 }
 
 // SendMessage sends plain-text message over websocket channel to server
-func (client *Client) SendMessage(message string) error {
+func (client *DefaultEchoServersClient) SendMessage(message string) error {
 	if client.connection == nil {
-		return errors.WithStack(errors.New("Not connected to any server"))
+		return errors.WithStack(ErrNotConnected)
 	}
 
 	select {
@@ -66,7 +76,11 @@ func (client *Client) SendMessage(message string) error {
 }
 
 // Listen start sending all received messages to configured messageReceiver
-func (client *Client) Listen() {
+func (client *DefaultEchoServersClient) Listen(messageReceiver chan string) error {
+	if client.connection == nil {
+		return errors.WithStack(ErrNotConnected)
+	}
+
 	go func() {
 		for {
 			select {
@@ -80,13 +94,19 @@ func (client *Client) Listen() {
 				log.Println("Failed to read message by websocket connection", err)
 				return
 			}
-			client.messageReceiver <- string(message)
+			messageReceiver <- string(message)
 		}
 	}()
+
+	return nil
 }
 
 // Close sends websocket.CloseMessage to server and disconnects
-func (client *Client) Close() error {
+func (client *DefaultEchoServersClient) Close() error {
+	if client.connection == nil {
+		return errors.WithStack(ErrNotConnected)
+	}
+
 	close(client.closed)
 	//wait for readers/writers to finish receiving/sending messages
 	time.Sleep(time.Second)
@@ -97,3 +117,5 @@ func (client *Client) Close() error {
 	}
 	return nil
 }
+
+var ErrNotConnected = errors.New("Not connected to any server")

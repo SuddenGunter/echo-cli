@@ -20,7 +20,6 @@ import (
 	"strings"
 
 	"github.com/SuddenGunter/echo-cli/pkg/echo"
-
 	"github.com/pkg/errors"
 
 	"github.com/spf13/cobra"
@@ -36,14 +35,11 @@ var createCmd = &cobra.Command{
 		if err != nil {
 			return errors.Wrap(err, "Failed to get user token")
 		}
-		cl := &echo.Client{
-			ConnectionString: "localhost:8080",
-			Route:            "/ws",
+		response, err := echo.SendOnce(state.Client, token, "user create "+strings.Join(args, ""))
+		if err != nil {
+			return errors.Wrap(err, "Failed send message to server")
 		}
-		_ = cl.Connect()
-		fmt.Printf("Token: %v\n", token)
-		fmt.Print("Creating user: " + strings.Join(args, ""))
-
+		fmt.Print(response)
 		return nil
 	},
 }

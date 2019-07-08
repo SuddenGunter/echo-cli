@@ -18,13 +18,17 @@ package main
 import (
 	"github.com/SuddenGunter/echo-cli/cmd"
 	"github.com/SuddenGunter/echo-cli/cmd/config"
+	"github.com/SuddenGunter/echo-cli/pkg/echo"
 	"github.com/SuddenGunter/echo-cli/pkg/tokenstorage"
 )
 
 func main() {
 	tokenCfg := tokenstorage.DefaultTempFileTokenStorageConfig
 	storage := tokenstorage.NewTempFileTokenStorage(tokenCfg)
-	state := config.NewState(storage, cmd.UnauthorizedErrorHandler)
 
+	client := echo.NewClient("localhost:8080", "/ws")
+
+	state := config.NewState(storage, cmd.UnauthorizedErrorHandler, client)
 	cmd.Execute(state)
+
 }

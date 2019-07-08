@@ -12,6 +12,7 @@ type Auth struct {
 	errorHandler func(error) error
 }
 
+// GetToken returns user's token if it exists
 func (handler *Auth) GetToken() (string, error) {
 	if len(handler.token) <= 0 {
 		return "", errors.New("Error token must not be empty")
@@ -19,12 +20,15 @@ func (handler *Auth) GetToken() (string, error) {
 	return handler.token, nil
 }
 
+// NewAuthHandler creates new auth handler instance
+// errorHandler triggers if authorization failed (e.g. token not found)
 func NewAuthHandler(tokenStorage tokenstorage.TokenStorage, errorHandler func(error) error) *Auth {
 	return &Auth{storage: tokenStorage,
 		errorHandler: errorHandler,
 	}
 }
 
+// Handle handles user's authorization and can be used in handlers pipeline
 func (handler *Auth) Handle(cmd *cobra.Command, args []string) error {
 	token, err := handler.storage.Read()
 	if err != nil {
