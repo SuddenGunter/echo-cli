@@ -1,0 +1,3 @@
+[submodule "echo-server"]
+	path = echo-server
+	url = https://github.com/xsikor/echo-server
