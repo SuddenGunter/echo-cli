@@ -6,4 +6,4 @@ steps:
   image: golang
   commands:
   - go test ./...	
-  - @CGO_ENABLED=0 go build -installsuffix cgo -o echo-cli
+  - go build -installsuffix cgo -o echo-cli
