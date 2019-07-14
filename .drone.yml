@@ -1,0 +1,9 @@
+kind: pipeline
+name: default
+
+steps:
+- name: test
+  image: golang
+  commands:
+  - go test ./...	
+  - @CGO_ENABLED=0 go build -installsuffix cgo -o echo-cli
