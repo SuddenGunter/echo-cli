@@ -1,9 +1,23 @@
 kind: pipeline
 name: default
 
+concurrency:
+  limit: 1
+
+clone:
+  depth: 5
+
 steps:
 - name: test
   image: golang
+  volumes:
+  - name: deps
+    path: /go
   commands:
-  - go test ./...	
-  - go build -installsuffix cgo -o echo-cli
+  - make test	
+  - make build
+
+volumes:
+- name: deps
+  host:
+    path: /var/lib/cache
