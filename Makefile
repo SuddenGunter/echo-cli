@@ -1,5 +1,5 @@
 build:
-	@CGO_ENABLED=0 go build -installsuffix cgo -o echo-cli
+	CGO_ENABLED=0 go build -installsuffix cgo -o echo-cli
 test:
 	go test ./...	
 demo:
